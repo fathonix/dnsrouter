@@ -96,7 +96,7 @@ func (h *DNSHandler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 					if upstreamResponse == nil {
 						logger.Error("UpstreamError", err)
 						if (len(upstreamHosts) - 1) > upstreamHostIndex {
-							logger.Debug("[%d] DNSLookupRetry %s -> %s", upstreamHost, upstreamHost[upstreamHostIndex+1])
+							logger.Debug("[%d] DNSLookupRetry %s -> %s", upstreamHost, upstreamHosts[upstreamHostIndex+1])
 							continue
 						}
 						return
