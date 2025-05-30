@@ -86,7 +86,6 @@ func (h *DNSHandler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 				if upstreamHost == "nxdomain" {
 					// Return nxdomain asap
 					msg.SetRcode(r, dns.RcodeNameError)
-					return
 				} else {
 					// Forward to the determined upstream dns server
 					m := new(dns.Msg)
@@ -96,12 +95,11 @@ func (h *DNSHandler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 					upstreamResponse, _, err := c.Exchange(m, net.JoinHostPort(upstreamHost, "53"))
 					if upstreamResponse == nil {
 						logger.Error("UpstreamError", err)
-						if len(upstreamHosts) - 1 > upstreamHostIndex {
-							logger.Debug("[%d] DNSLookupRetry %s -> %s", upstreamHost, upstreamHost[upstreamHostIndex + 1])
+						if (len(upstreamHosts) - 1) > upstreamHostIndex {
+							logger.Debug("[%d] DNSLookupRetry %s -> %s", upstreamHost, upstreamHost[upstreamHostIndex+1])
 							continue
-						} else {
-							return
 						}
+						return
 					}
 
 					if upstreamResponse.Rcode != dns.RcodeSuccess {
