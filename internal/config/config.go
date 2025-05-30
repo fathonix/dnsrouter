@@ -91,13 +91,13 @@ func writeConfig() {
 	// nolint: gosec
 	dirErr := os.MkdirAll(folder, os.ModePerm)
 	if dirErr != nil {
-		logger.Error("ConfigWriteError", fmt.Errorf("Could not create config folder: %s: %s", path.Dir(filename), dirErr.Error()))
+		logger.Error("ConfigWriteError", fmt.Errorf("could not create config folder: %s: %s", path.Dir(filename), dirErr.Error()))
 		os.Exit(1)
 	}
 
 	err := os.WriteFile(filename, content, 0600)
 	if err != nil {
-		logger.Error("ConfigWriteError", fmt.Errorf("Could not write config file: %s: %s", filename, err.Error()))
+		logger.Error("ConfigWriteError", fmt.Errorf("could not write config file: %s: %s", filename, err.Error()))
 		os.Exit(1)
 	}
 
