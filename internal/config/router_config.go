@@ -197,7 +197,7 @@ func (s *ServerConfig) Check() {
 
 			thisCombination := fmt.Sprintf("%s:%d", strings.ToLower(s.Servers[idx].Host), s.Servers[idx].Port)
 			if contains(combinations, thisCombination) {
-				logger.Error("ServerConfigError", fmt.Errorf("Cannot start 2 servers with the same interface/port: %s", thisCombination))
+				logger.Error("ServerConfigError", fmt.Errorf("cannot start 2 servers with the same interface/port: %s", thisCombination))
 				os.Exit(1)
 			}
 

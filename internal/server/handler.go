@@ -60,7 +60,7 @@ func (h *DNSHandler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	// See if we have this cached
 	cacheKey := fmt.Sprintf("%d-%s-%d", h.ServerIndex, dns.Fqdn(domain), msg.Question[0].Qtype)
 
-	var cacheItem interface{}
+	var cacheItem any
 	found := false
 	if memCache != nil {
 		cacheItem, found = memCache.Get(cacheKey)
@@ -68,6 +68,7 @@ func (h *DNSHandler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 
 	if found {
 		// Using our cached answer
+		// nolint: revive
 		msg.Answer = cacheItem.([]dns.RR)
 		logger.Debug("[%d] DNSLookup %s %s -> cached", h.ServerIndex, domain, getRecordTypeString(msg.Question[0].Qtype))
 	} else {

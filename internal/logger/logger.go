@@ -3,6 +3,7 @@ package logger
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	stdlog "log"
 	"os"
@@ -71,17 +72,17 @@ func GetLogLevel() Level {
 }
 
 // Debug logs if the log level is set to DebugLevel or below. Arguments are handled in the manner of fmt.Printf.
-func Debug(format string, args ...interface{}) {
+func Debug(format string, args ...any) {
 	logger.Debug(format, args...)
 }
 
 // Info logs if the log level is set to InfoLevel or below. Arguments are handled in the manner of fmt.Printf.
-func Info(format string, args ...interface{}) {
+func Info(format string, args ...any) {
 	logger.Info(format, args...)
 }
 
 // Warn logs if the log level is set to WarnLevel or below. Arguments are handled in the manner of fmt.Printf.
-func Warn(format string, args ...interface{}) {
+func Warn(format string, args ...any) {
 	logger.Warn(format, args...)
 }
 
@@ -98,7 +99,7 @@ func (l *Logger) Configure(c *Config) error {
 	defer l.mux.Unlock()
 
 	if c == nil {
-		return fmt.Errorf("a non nil Config is mandatory")
+		return errors.New("a non nil Config is mandatory")
 	}
 
 	if err := c.LogThreshold.validate(); err != nil {
@@ -129,7 +130,7 @@ var logLevels = map[Level]string{
 	ErrorLevel: "ERROR",
 }
 
-func (l *Logger) logLevel(logLevel Level, format string, args ...interface{}) {
+func (l *Logger) logLevel(logLevel Level, format string, args ...any) {
 	if logLevel < l.LogThreshold {
 		return
 	}
@@ -137,11 +138,12 @@ func (l *Logger) logLevel(logLevel Level, format string, args ...interface{}) {
 	errorClass := ""
 	if logLevel == ErrorLevel {
 		// First arg is the errorClass
+		// nolint: revive
 		errorClass = args[0].(string)
 		if len(args) > 1 {
 			args = args[1:]
 		} else {
-			args = []interface{}{}
+			args = []any{}
 		}
 	}
 
@@ -197,17 +199,17 @@ func (l *Logger) GetLogLevel() Level {
 }
 
 // Debug logs if the log level is set to DebugLevel or below. Arguments are handled in the manner of fmt.Printf.
-func (l *Logger) Debug(format string, args ...interface{}) {
+func (l *Logger) Debug(format string, args ...any) {
 	l.logLevel(DebugLevel, format, args...)
 }
 
 // Info logs if the log level is set to InfoLevel or below. Arguments are handled in the manner of fmt.Printf.
-func (l *Logger) Info(format string, args ...interface{}) {
+func (l *Logger) Info(format string, args ...any) {
 	l.logLevel(InfoLevel, format, args...)
 }
 
 // Warn logs if the log level is set to WarnLevel or below. Arguments are handled in the manner of fmt.Printf.
-func (l *Logger) Warn(format string, args ...interface{}) {
+func (l *Logger) Warn(format string, args ...any) {
 	l.logLevel(WarnLevel, format, args...)
 }
 
